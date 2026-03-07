@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyBehavior : MonoBehaviour
 {
-    public enum BehaviorState { Idle = 0, Roaming = 1, Abduct = 2, GoTo = 3, Dodge = 4, Dead = -1}
+    public enum BehaviorState { Idle = 0, Roaming = 1, Abduct = 2, GoTo = 3, Dodge = 4, Entry = 5, Dead = -1}
     public BehaviorState state;
     protected virtual BehaviorState PickNextBehavior() 
     {
@@ -17,8 +17,8 @@ public class EnemyBehavior : MonoBehaviour
 
     private void Start()
     {
-        state = PickNextBehavior();
-        StartBehavior();
+        //state = PickNextBehavior();
+        //StartBehavior();
     }
     private void Update()
     {
@@ -30,6 +30,11 @@ public class EnemyBehavior : MonoBehaviour
         state = BehaviorState.Dead;
 
         StartBehavior();
+    }
+
+    public virtual void EnableEnemy() 
+    {
+    
     }
 
 }

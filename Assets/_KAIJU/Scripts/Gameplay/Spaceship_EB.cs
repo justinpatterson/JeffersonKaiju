@@ -49,6 +49,9 @@ public class Spaceship_EB : EnemyBehavior
                 break;
             case BehaviorState.Dead:
                 break;
+            case BehaviorState.Entry:
+                groundOffsetPivot.localPosition = Vector3.up * 10f;
+                break;
         }
 
     }
@@ -63,27 +66,46 @@ public class Spaceship_EB : EnemyBehavior
         if (state == BehaviorState.Dead)
             return;
 
-        HoverSinOffset();
 
         switch (state)
         {
+            case BehaviorState.Entry:
+                stateTransitionTimer -= Time.deltaTime * 2f;
+                float percentage = (stateTransitionTimer / 5f);
+                float nextYPosition = baseGroundOffset + ((10f - baseGroundOffset) * percentage);
+                groundOffsetPivot.localPosition = Vector3.up * nextYPosition;
+                if(stateTransitionTimer <= 0f)
+                {
+                    StateTimerBehavior();
+
+                }
+                break;
             case BehaviorState.Idle:
+
+                HoverSinOffset();
+                StateTimerBehavior();
                 break;
             case BehaviorState.Roaming:
+
+                HoverSinOffset();
                 transform.position = transform.position + roamingDirection.normalized * roamingSpeed * Time.deltaTime;
+                StateTimerBehavior();
                 break;
             case BehaviorState.Abduct:
+                StateTimerBehavior();
                 break;
             case BehaviorState.GoTo:
+                HoverSinOffset();
+                StateTimerBehavior();
                 break;
             case BehaviorState.Dodge:
+                StateTimerBehavior();
                 break;
             case BehaviorState.Dead:
                 break;
         }
 
 
-        StateTimerBehavior();
     }
 
     void HoverSinOffset() 
@@ -112,5 +134,12 @@ public class Spaceship_EB : EnemyBehavior
         base.DisableEnemy();
         rb.useGravity = true;
         grabRef.forceGravityOnDetach = true;
+    }
+
+    public override void EnableEnemy()
+    {
+        base.EnableEnemy();
+        state = BehaviorState.Entry;
+        StartBehavior();
     }
 }
