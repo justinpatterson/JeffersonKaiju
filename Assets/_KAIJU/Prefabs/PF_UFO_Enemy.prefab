@@ -56,6 +56,7 @@ MonoBehaviour:
   grabRef: {fileID: 0}
   roamingDirection: {x: 0, y: 0, z: 0}
   roamingSpeed: 1
+  cityDataRef: {fileID: 11400000, guid: 51c2a5eb15c96bc4aa4610a25da4560b, type: 2}
 --- !u!1 &1041065129171116624
 GameObject:
   m_ObjectHideFlags: 0

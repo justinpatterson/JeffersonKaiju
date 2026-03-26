@@ -17,9 +17,13 @@ public class Spaceship_EB : EnemyBehavior
     public Vector3 roamingDirection = Vector3.zero;
     public float roamingSpeed = 1f;
 
+    [Header("Data References")]
+    public GameplayData cityDataRef;
+
+
     protected override BehaviorState PickNextBehavior()
     {
-        int randomBehavior = Random.Range(0, 2);
+        int randomBehavior = Random.Range(0, 3);
         BehaviorState randomState = (BehaviorState) randomBehavior;
         return randomState;
     }
@@ -42,6 +46,7 @@ public class Spaceship_EB : EnemyBehavior
 
                 break;
             case BehaviorState.Abduct:
+                cityDataRef.DamageCity(1);
                 break;
             case BehaviorState.GoTo:
                 break;
@@ -141,5 +146,10 @@ public class Spaceship_EB : EnemyBehavior
         base.EnableEnemy();
         state = BehaviorState.Entry;
         StartBehavior();
+    }
+
+    private void OnDestroy()
+    {
+        cityDataRef.ReportEnemyDefeated();
     }
 }
