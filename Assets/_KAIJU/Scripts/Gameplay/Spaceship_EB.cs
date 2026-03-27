@@ -20,13 +20,48 @@ public class Spaceship_EB : EnemyBehavior
     [Header("Data References")]
     public GameplayData cityDataRef;
 
+    [Header("Abduction")]
+    public float abductionDuration = 8f;           // How long beam runs
+    public float abductionReachDistance = 15f;     // How close to start
+    public Transform abductionBeamPoint;           // Visual beam endpoint
+
+    private Building targetBuilding;
+    private Meeple targetMeeple;
+    private bool hasValidTarget;
+    public Vector3 targetDirection;  // New: for GoTo/Abduct targeting
+
 
     protected override BehaviorState PickNextBehavior()
     {
+        if (FindAbductionTarget())
+            return BehaviorState.GoTo;
+
         int randomBehavior = Random.Range(0, 3);
-        BehaviorState randomState = (BehaviorState) randomBehavior;
-        return randomState;
+        return (BehaviorState)randomBehavior;
     }
+    private bool FindAbductionTarget()
+    {
+        
+        Building[] buildings = FindObjectsOfType<Building>();
+        float closestDist = float.MaxValue;
+        Building best = null;
+
+        foreach (var b in buildings)
+        {
+            if (b.abductionHandler == null || !b.abductionHandler.HasAvailableMeeple()) continue;
+
+            float dist = Vector3.Distance(transform.position, b.transform.position);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                best = b;
+            }
+        }
+
+        targetBuilding = best;
+        return best != null;
+    }
+
     protected override void StartBehavior()
     {
         base.StartBehavior();
@@ -46,9 +81,13 @@ public class Spaceship_EB : EnemyBehavior
 
                 break;
             case BehaviorState.Abduct:
-                cityDataRef.DamageCity(1);
+                stateTransitionTimer = abductionDuration;  // Just set timer
                 break;
             case BehaviorState.GoTo:
+                if (targetBuilding != null)
+                {
+                    targetDirection = (targetBuilding.transform.position - transform.position).normalized;
+                }
                 break;
             case BehaviorState.Dodge:
                 break;
@@ -97,11 +136,43 @@ public class Spaceship_EB : EnemyBehavior
                 StateTimerBehavior();
                 break;
             case BehaviorState.Abduct:
+                HoverSinOffset();
+
+                if (targetMeeple != null)
+                {
+                    targetMeeple.UpdateAbduction(abductionBeamPoint, Time.deltaTime);
+
+                    if (targetMeeple.state == Meeple.MeepleState.Abducted)
+                    {
+                        cityDataRef?.DamageCity(2);
+                        if (targetBuilding != null)
+                            targetBuilding.abductionHandler.CompleteAbduction(targetMeeple);
+                        targetMeeple = null;
+                    }
+                }
                 StateTimerBehavior();
                 break;
             case BehaviorState.GoTo:
                 HoverSinOffset();
-                StateTimerBehavior();
+                transform.position += targetDirection * roamingSpeed * Time.deltaTime;
+
+                if (targetBuilding != null &&
+                    Vector3.Distance(transform.position, targetBuilding.transform.position) < abductionReachDistance)
+                {
+                    if (targetBuilding.TryReserveMeeple(out targetMeeple))
+                    {
+                        state = BehaviorState.Abduct;
+                        StartBehavior();
+                    }
+                    else
+                    {
+                        StateTimerBehavior();
+                    }
+                }
+                else
+                {
+                    StateTimerBehavior();  // Fallback if no target or too far
+                }
                 break;
             case BehaviorState.Dodge:
                 StateTimerBehavior();
@@ -135,10 +206,14 @@ public class Spaceship_EB : EnemyBehavior
     {
         if (state == BehaviorState.Dead)
             return;
-
-        base.DisableEnemy();
+        if (targetBuilding != null && targetMeeple != null)
+        {
+            targetBuilding.abductionHandler.AbortAbduction(targetMeeple);
+            targetMeeple = null;
+        }
         rb.useGravity = true;
         grabRef.forceGravityOnDetach = true;
+        base.DisableEnemy();
     }
 
     public override void EnableEnemy()
