@@ -24,7 +24,7 @@ public class Spaceship_EB : EnemyBehavior
     public float abductionDuration = 8f;           // How long beam runs
     public float abductionReachDistance = 15f;     // How close to start
     public Transform abductionBeamPoint;           // Visual beam endpoint
-
+    [SerializeField]
     private Building targetBuilding;
     private Meeple targetMeeple;
     private bool hasValidTarget;
@@ -36,8 +36,13 @@ public class Spaceship_EB : EnemyBehavior
         if (FindAbductionTarget())
             return BehaviorState.GoTo;
 
-        int randomBehavior = Random.Range(0, 3);
-        return (BehaviorState)randomBehavior;
+        BehaviorState[] randomStateList = new BehaviorState[] 
+        {
+            BehaviorState.Idle, BehaviorState.Roaming //, BehaviorState.Dodge
+        };
+        int randomIndex = Random.Range(0, randomStateList.Length);
+
+        return (BehaviorState)randomStateList[randomIndex];
     }
     private bool FindAbductionTarget()
     {
@@ -59,6 +64,8 @@ public class Spaceship_EB : EnemyBehavior
         }
 
         targetBuilding = best;
+        if(best)
+            Debug.Log("Selected building: " + best.gameObject.name);
         return best != null;
     }
 
@@ -87,6 +94,7 @@ public class Spaceship_EB : EnemyBehavior
                 if (targetBuilding != null)
                 {
                     targetDirection = (targetBuilding.transform.position - transform.position).normalized;
+                    targetDirection.y = 0f;
                 }
                 break;
             case BehaviorState.Dodge:
@@ -150,12 +158,11 @@ public class Spaceship_EB : EnemyBehavior
                         targetMeeple = null;
                     }
                 }
-                StateTimerBehavior();
+                //StateTimerBehavior();
                 break;
             case BehaviorState.GoTo:
                 HoverSinOffset();
                 transform.position += targetDirection * roamingSpeed * Time.deltaTime;
-
                 if (targetBuilding != null &&
                     Vector3.Distance(transform.position, targetBuilding.transform.position) < abductionReachDistance)
                 {
@@ -166,12 +173,13 @@ public class Spaceship_EB : EnemyBehavior
                     }
                     else
                     {
-                        StateTimerBehavior();
+                        Debug.Log("UNABLE TO RESERVE.");
+                    //    StateTimerBehavior();
                     }
                 }
                 else
                 {
-                    StateTimerBehavior();  // Fallback if no target or too far
+                    //StateTimerBehavior();  // Fallback if no target or too far
                 }
                 break;
             case BehaviorState.Dodge:
@@ -211,8 +219,10 @@ public class Spaceship_EB : EnemyBehavior
             targetBuilding.abductionHandler.AbortAbduction(targetMeeple);
             targetMeeple = null;
         }
-        rb.useGravity = true;
-        grabRef.forceGravityOnDetach = true;
+        if(rb)
+            rb.useGravity = true;
+        if(grabRef)
+            grabRef.forceGravityOnDetach = true;
         base.DisableEnemy();
     }
 

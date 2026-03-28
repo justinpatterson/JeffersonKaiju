@@ -53,10 +53,15 @@ MonoBehaviour:
   sinFactor: 0.25
   sinSpeed: 0.5
   rb: {fileID: 806048302802559509}
-  grabRef: {fileID: 0}
+  grabRef: {fileID: 2100010120143557904}
   roamingDirection: {x: 0, y: 0, z: 0}
   roamingSpeed: 1
   cityDataRef: {fileID: 11400000, guid: 51c2a5eb15c96bc4aa4610a25da4560b, type: 2}
+  abductionDuration: 8
+  abductionReachDistance: 1
+  abductionBeamPoint: {fileID: 0}
+  targetBuilding: {fileID: 0}
+  targetDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &1041065129171116624
 GameObject:
   m_ObjectHideFlags: 0
