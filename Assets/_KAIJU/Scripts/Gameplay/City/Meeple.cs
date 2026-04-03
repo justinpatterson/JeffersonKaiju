@@ -10,7 +10,7 @@ public class Meeple : MonoBehaviour
     public Transform currentTarget;
 
     public float beamLerpSpeed = 1f;
-    private float beamT;
+    private float lerpTime;
 
     public bool IsAbductable => state == MeepleState.Idle || state == MeepleState.Reserved;
 
@@ -34,8 +34,9 @@ public class Meeple : MonoBehaviour
 
     public void BeginAbduction()
     {
+        Debug.Log("STATE IS NOW ABDUCTING ON MEEPLE...");
         state = MeepleState.Abducting;
-        beamT = 0f;
+        lerpTime = 0f;
     }
 
     public void UpdateAbduction(Transform shipPoint, float dt)
@@ -43,9 +44,9 @@ public class Meeple : MonoBehaviour
         if (state != MeepleState.Abducting || shipPoint == null) return;
 
         currentTarget = shipPoint;
-        beamT += dt * beamLerpSpeed;
-        transform.position = Vector3.Lerp(homePoint.position, shipPoint.position, beamT);
-        transform.rotation = Quaternion.Slerp(homePoint.rotation, shipPoint.rotation, beamT);
+        lerpTime += dt * beamLerpSpeed;
+        transform.position = Vector3.Lerp(homePoint.position, shipPoint.position, lerpTime);
+        transform.rotation = Quaternion.Slerp(homePoint.rotation, shipPoint.rotation, lerpTime);
     }
 
     public void CompleteAbduction()

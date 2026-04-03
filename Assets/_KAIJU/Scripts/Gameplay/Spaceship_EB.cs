@@ -26,6 +26,7 @@ public class Spaceship_EB : EnemyBehavior
     public Transform abductionBeamPoint;           // Visual beam endpoint
     [SerializeField]
     private Building targetBuilding;
+    [SerializeField]
     private Meeple targetMeeple;
     private bool hasValidTarget;
     public Vector3 targetDirection;  // New: for GoTo/Abduct targeting
@@ -89,6 +90,11 @@ public class Spaceship_EB : EnemyBehavior
                 break;
             case BehaviorState.Abduct:
                 stateTransitionTimer = abductionDuration;  // Just set timer
+                if(targetBuilding != null) 
+                {
+                    Debug.Log("BEGINNING ABDUCTION...");
+                    targetBuilding.abductionHandler.BeginAbduction(targetMeeple);
+                }
                 break;
             case BehaviorState.GoTo:
                 if (targetBuilding != null)
@@ -148,7 +154,8 @@ public class Spaceship_EB : EnemyBehavior
 
                 if (targetMeeple != null)
                 {
-                    targetMeeple.UpdateAbduction(abductionBeamPoint, Time.deltaTime);
+                    Debug.Log("Updating position...");
+                    targetMeeple.UpdateAbduction(abductionBeamPoint, (Time.deltaTime/abductionDuration));
 
                     if (targetMeeple.state == Meeple.MeepleState.Abducted)
                     {
@@ -168,6 +175,7 @@ public class Spaceship_EB : EnemyBehavior
                 {
                     if (targetBuilding.TryReserveMeeple(out targetMeeple))
                     {
+                        Debug.Log("I have reserved: " + targetMeeple.name);
                         state = BehaviorState.Abduct;
                         StartBehavior();
                     }
@@ -236,5 +244,30 @@ public class Spaceship_EB : EnemyBehavior
     private void OnDestroy()
     {
         cityDataRef.ReportEnemyDefeated();
+    }
+    private void OnDrawGizmos()
+    {
+        switch (state)
+        {
+            case BehaviorState.Idle:
+                break;
+            case BehaviorState.Roaming:
+                break;
+            case BehaviorState.Abduct:
+                break;
+            case BehaviorState.GoTo:
+                if (targetMeeple != null)
+                {
+                    Gizmos.DrawLine(transform.position, targetMeeple.transform.position);
+                    Gizmos.DrawSphere(targetMeeple.transform.position, 0.5f);
+                }
+                break;
+            case BehaviorState.Dodge:
+                break;
+            case BehaviorState.Entry:
+                break;
+            case BehaviorState.Dead:
+                break;
+        }
     }
 }

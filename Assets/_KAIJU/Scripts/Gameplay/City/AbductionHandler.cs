@@ -5,6 +5,7 @@ public class AbductionHandler : MonoBehaviour
 {
     public MeepleSpawner spawner;
     private readonly HashSet<Meeple> reserved = new HashSet<Meeple>();
+    [SerializeField]
     private Meeple activeTarget;
 
     private void Awake()
@@ -67,7 +68,9 @@ public class AbductionHandler : MonoBehaviour
 
     public void BeginAbduction(Meeple meeple)
     {
+        Debug.Log("Abductor instruction received...");
         if (meeple == null) return;
+        Debug.Log("Meeple not null...");
         activeTarget = meeple;
         meeple.BeginAbduction();
     }

@@ -49,7 +49,7 @@ MonoBehaviour:
   stateTransitionTimer: 5
   spaceShipPivot: {fileID: 9119663804501486765}
   groundOffsetPivot: {fileID: 6127176959261683187}
-  baseGroundOffset: 1.5
+  baseGroundOffset: 2
   sinFactor: 0.25
   sinSpeed: 0.5
   rb: {fileID: 806048302802559509}
@@ -59,8 +59,9 @@ MonoBehaviour:
   cityDataRef: {fileID: 11400000, guid: 51c2a5eb15c96bc4aa4610a25da4560b, type: 2}
   abductionDuration: 8
   abductionReachDistance: 1
-  abductionBeamPoint: {fileID: 0}
+  abductionBeamPoint: {fileID: 8371466770389950987}
   targetBuilding: {fileID: 0}
+  targetMeeple: {fileID: 0}
   targetDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &1041065129171116624
 GameObject:
@@ -126,6 +127,37 @@ Transform:
   - {fileID: 5990559320339164628}
   m_Father: {fileID: 9119663804501486765}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4347175972509800466
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8371466770389950987}
+  m_Layer: 0
+  m_Name: AbductionPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8371466770389950987
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347175972509800466}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.0804, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5990559320339164628}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4624359370735007746
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,6 +191,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4266234428691303787}
+  - {fileID: 8371466770389950987}
   m_Father: {fileID: 6127176959261683187}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &5660875875783307750
