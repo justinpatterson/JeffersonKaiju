@@ -92,4 +92,6 @@ public class AbductionHandler : MonoBehaviour
         if (activeTarget == meeple) activeTarget = null;
         meeple.AbortAbduction();
     }
+
+    
 }

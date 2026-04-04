@@ -24,12 +24,19 @@ public class MeepleSpawner : MonoBehaviour
         if (meepleVariants == null || meepleVariants.Length == 0) return;
 
         int count = Random.Range(minMeeples, maxMeeples + 1);
+        List<Transform> remainingPoints = new List<Transform>(roofSpawnPoints); 
+
         for (int i = 0; i < count; i++)
         {
+            if (remainingPoints.Count <= 0)
+                continue;
+
             GameObject prefab = PickWeightedVariant();
             if (prefab == null) continue;
 
-            Transform p = roofSpawnPoints[Random.Range(0, roofSpawnPoints.Length)];
+            int nextPoint = Random.Range(0, remainingPoints.Count);
+            Transform p = remainingPoints[nextPoint];
+            remainingPoints.RemoveAt(nextPoint);
             GameObject obj = Instantiate(prefab, p.position, p.rotation, transform);
 
             Meeple m = obj.GetComponent<Meeple>();
@@ -64,5 +71,12 @@ public class MeepleSpawner : MonoBehaviour
             if (spawnedMeeples[i] != null) Destroy(spawnedMeeples[i].gameObject);
         }
         spawnedMeeples.Clear();
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        foreach (Transform t in roofSpawnPoints)
+            Gizmos.DrawWireSphere(t.position, 0.1f);
     }
 }

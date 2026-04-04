@@ -31,6 +31,8 @@ public class Spaceship_EB : EnemyBehavior
     private bool hasValidTarget;
     public Vector3 targetDirection;  // New: for GoTo/Abduct targeting
 
+    public TractorBeamController tractorBeam;
+
 
     protected override BehaviorState PickNextBehavior()
     {
@@ -78,6 +80,8 @@ public class Spaceship_EB : EnemyBehavior
         switch (state)
         {
             case BehaviorState.Idle:
+
+                tractorBeam.StopTractorBeam();
                 break;
             case BehaviorState.Roaming:
                 roamingDirection = new Vector3
@@ -87,6 +91,7 @@ public class Spaceship_EB : EnemyBehavior
                     Random.Range(-1f,1f)
                 );
 
+                tractorBeam.StopTractorBeam();
                 break;
             case BehaviorState.Abduct:
                 stateTransitionTimer = abductionDuration;  // Just set timer
@@ -95,6 +100,10 @@ public class Spaceship_EB : EnemyBehavior
                     Debug.Log("BEGINNING ABDUCTION...");
                     targetBuilding.abductionHandler.BeginAbduction(targetMeeple);
                 }
+                if(tractorBeam != null) 
+                {
+                    tractorBeam.StartTractorBeam(abductionBeamPoint, targetMeeple.transform);
+                }
                 break;
             case BehaviorState.GoTo:
                 if (targetBuilding != null)
@@ -102,13 +111,17 @@ public class Spaceship_EB : EnemyBehavior
                     targetDirection = (targetBuilding.transform.position - transform.position).normalized;
                     targetDirection.y = 0f;
                 }
+                tractorBeam.StopTractorBeam();
                 break;
             case BehaviorState.Dodge:
+                tractorBeam.StopTractorBeam();
                 break;
             case BehaviorState.Dead:
+                tractorBeam.StopTractorBeam();
                 break;
             case BehaviorState.Entry:
                 groundOffsetPivot.localPosition = Vector3.up * 10f;
+                tractorBeam.StopTractorBeam();
                 break;
         }
 
@@ -154,6 +167,9 @@ public class Spaceship_EB : EnemyBehavior
 
                 if (targetMeeple != null)
                 {
+                    if (tractorBeam != null)
+                        tractorBeam.UpdateTractorBeam();
+
                     Debug.Log("Updating position...");
                     targetMeeple.UpdateAbduction(abductionBeamPoint, (Time.deltaTime/abductionDuration));
 
