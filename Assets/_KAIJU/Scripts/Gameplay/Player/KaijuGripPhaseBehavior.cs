@@ -21,7 +21,7 @@ public class KaijuGripPhaseBehavior : MonoBehaviour
     [SerializeField]
     XRInputValueReader<float> m_TriggerInput = new XRInputValueReader<float>("Trigger");
 
-    public UnityEvent OnGripPhaseChanged;
+    public UnityEvent<GripPhase> OnGripPhaseChanged;
     private void Update()
     {
 
@@ -38,7 +38,7 @@ public class KaijuGripPhaseBehavior : MonoBehaviour
         if(nextGripPhase != phase) 
         {
             phase = nextGripPhase;
-            OnGripPhaseChanged?.Invoke() ;
+            OnGripPhaseChanged?.Invoke(phase) ;
         }
 
     }
