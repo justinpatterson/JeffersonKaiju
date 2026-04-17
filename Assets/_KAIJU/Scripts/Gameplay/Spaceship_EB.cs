@@ -32,6 +32,7 @@ public class Spaceship_EB : EnemyBehavior
     public Vector3 targetDirection;  // New: for GoTo/Abduct targeting
 
     public TractorBeamController tractorBeam;
+    public FXHelper deathFXHelper;
 
 
     protected override BehaviorState PickNextBehavior()
@@ -247,6 +248,9 @@ public class Spaceship_EB : EnemyBehavior
             rb.useGravity = true;
         if(grabRef)
             grabRef.forceGravityOnDetach = true;
+        if (deathFXHelper != null)
+            deathFXHelper.TriggerFX();
+
         base.DisableEnemy();
     }
 

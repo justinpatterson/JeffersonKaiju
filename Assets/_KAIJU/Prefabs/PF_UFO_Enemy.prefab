@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1353888523987280612}
   - component: {fileID: 449396220724900164}
+  - component: {fileID: 8489587291879322719}
   m_Layer: 0
   m_Name: PF_UFO_Enemy
   m_TagString: Untagged
@@ -64,6 +65,21 @@ MonoBehaviour:
   targetMeeple: {fileID: 0}
   targetDirection: {x: 0, y: 0, z: 0}
   tractorBeam: {fileID: 9099151334289455921}
+  deathFXHelper: {fileID: 8489587291879322719}
+--- !u!114 &8489587291879322719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108016196286848726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aedcbe042d6e6cf4d947d961f3e36703, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FXHelper
+  FXPrefab: {fileID: 5358989241935408828, guid: 43a5a4a65e1c40245bc2fd34f7ee82a1, type: 3}
+  spawnTarget: {fileID: 4266234428691303787}
 --- !u!1 &1041065129171116624
 GameObject:
   m_ObjectHideFlags: 0
