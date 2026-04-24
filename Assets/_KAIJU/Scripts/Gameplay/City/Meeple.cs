@@ -14,6 +14,9 @@ public class Meeple : MonoBehaviour
 
     public bool IsAbductable => state == MeepleState.Idle || state == MeepleState.Reserved;
 
+    public delegate void MeepleStateChange();
+    public MeepleStateChange OnMeepleStateChanged;
+
     public void SetHome(Transform home)
     {
         homePoint = home;
@@ -24,18 +27,21 @@ public class Meeple : MonoBehaviour
     {
         if (state != MeepleState.Idle) return;
         state = MeepleState.Reserved;
+        OnMeepleStateChanged?.Invoke();
     }
 
     public void EndReservation()
     {
         if (state != MeepleState.Reserved) return;
         state = MeepleState.Idle;
+        OnMeepleStateChanged?.Invoke();
     }
 
     public void BeginAbduction()
     {
         Debug.Log("STATE IS NOW ABDUCTING ON MEEPLE...");
         state = MeepleState.Abducting;
+        OnMeepleStateChanged?.Invoke();
         lerpTime = 0f;
     }
 
@@ -52,12 +58,14 @@ public class Meeple : MonoBehaviour
     public void CompleteAbduction()
     {
         state = MeepleState.Abducted;
+        OnMeepleStateChanged?.Invoke();
         gameObject.SetActive(false);
     }
 
     public void AbortAbduction()
     {
         state = MeepleState.Idle;
+        OnMeepleStateChanged?.Invoke();
 
         if (homePoint != null)
             transform.SetPositionAndRotation(homePoint.position, homePoint.rotation);
