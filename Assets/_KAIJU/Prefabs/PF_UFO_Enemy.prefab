@@ -58,7 +58,7 @@ MonoBehaviour:
   roamingDirection: {x: 0, y: 0, z: 0}
   roamingSpeed: 3
   cityDataRef: {fileID: 11400000, guid: 51c2a5eb15c96bc4aa4610a25da4560b, type: 2}
-  abductionDuration: 100
+  abductionDuration: 20
   abductionReachDistance: 1
   abductionBeamPoint: {fileID: 8371466770389950987}
   targetBuilding: {fileID: 0}
